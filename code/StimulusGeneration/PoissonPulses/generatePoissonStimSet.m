@@ -28,12 +28,18 @@
 %      TF = temporal frequency for each trial (vector, length=nTrials)
 %      SC = integer label of stimulus condition for each trial. With the default set of conditions this is equivalent to TF (vector, length=nTrials)
 %      frozenNoiseTrials = whether a trial was a frozen noise trial or not, (vector, length=nTrials)
-
 %      randomSeed,randomSeed_frozen = the random seeds used to generate the stimuli
 %                                     (specified either by input or the default seeds) 
 %      StimLong          = the entire stimulus unraveled into a vector with padding between trials (specified by pauseLen) 
 %                          (and padded at the beginning and end)
 %      TS = start times each trial within StimLong (vector, length=nTrials)
+%
+%   example function call
+%      [Stim,TL,TF,SC,frozenNoiseTrials,randomSeed,randomSeed_frozenStimLong,TS] = generatePoissonStimSet(500,6,1);
+%
+%      This generates 500 trials. Every 9th trial is a fixed trial of 10pulses/second (the 6th stimulus condition).
+%      The 8 trials between each frozen noise presentation consist of 1 trial of each pulse frequency, in some shuffled order.
+%
 function [Stim,TL,TF,SC,frozenNoiseTrials,randomSeed,randomSeed_frozen,StimLong,TS] = generatePoissonStimSet(nTrials,frozenNoiseCondition,blocksBetweenFrozenStim,randomSeed,randomSeed_frozen,stimulusConditions,pauseLen,frameLen)
 
 if(nargin < 8)
@@ -51,14 +57,19 @@ if(nargin < 6 || isempty(stimulusConditions))
         14.3, 5;
         20, 5];
 end
-
+ 
 maxTrialLength = ceil(max(stimulusConditions(:,2)/frameLen)); %max length of each trial (in frames)
 NC = size(stimulusConditions,1); %number of stim conditions
+
+%sets up some random seeds based on time in case no seeds are given
+rng('shuffle');
+seed1 = randi(intmax('int32'));
+seed2 = randi(intmax('int32'));
 
 %% generate frozen noise trial
 if(nargin < 5 || isempty(randomSeed_frozen))
     %setup seed to use for frozen noise trials
-    randomSeed_frozen = rng(98112,'twister');
+    randomSeed_frozen = rng(seed1,'twister');
 end
 
 y_frozen = generateTrial(stimulusConditions(frozenNoiseCondition,2),frameLen,stimulusConditions(frozenNoiseCondition,1),randomSeed_frozen);
@@ -71,7 +82,7 @@ if(nargin < 3 || isempty(blocksBetweenFrozenStim))
 end
 if(nargin < 4 || isempty(randomSeed))
     %setup random seed to use
-    randomSeed = rng(57812,'twister');
+    randomSeed = rng(seed2,'twister');
 end
 rng(randomSeed);
 

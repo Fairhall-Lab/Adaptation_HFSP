@@ -10,6 +10,9 @@
 %  outputs:
 %      y           = the stimulus in descrete bins of width frameLen
 %
+%  example function call
+%    y = generarteTrial(5,10e-3,10);
+%      returns a 5 second long trial, with frame lengths of 10ms, and a pulse rate of 10pulses/second.
 function [y] = generateTrial(trialLen,frameLen,rate,seed)
 
 %sets the random seed if given
