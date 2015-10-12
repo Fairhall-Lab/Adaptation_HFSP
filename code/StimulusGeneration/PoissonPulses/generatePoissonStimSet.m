@@ -6,7 +6,7 @@
 %  inputs:
 %      nTrials = total number of trials to generate
 %      frozenNoiseCondition = stimulus condition (row of stimulusConditions, see below) that is used for frozen noise
-                              trials
+%                             trials
 %      blocksBetweenFrozenStim = how many trials of each stimulus condition
 %                                are shown between presentations of the frozen stim (default = 1)
 %      randomSeed = random seed used to generate trial order and pulse
@@ -29,7 +29,7 @@
 %      TL = length of each trial, in terms of number of frames (vector, length=nTrials)
 %      TF = temporal frequency for each trial (vector, length=nTrials)
 %      SC = integer label of stimulus condition for each trial. With the default set of conditions this
-            is equivalent to TF (vector, length=nTrials)
+%           is equivalent to TF (vector, length=nTrials)
 %      frozenNoiseTrials = whether a trial was a frozen noise trial or not, (vector, length=nTrials)
 %      randomSeed,randomSeed_frozen = the random seeds used to generate the stimuli
 %                                     (specified either by input or the default seeds) 
