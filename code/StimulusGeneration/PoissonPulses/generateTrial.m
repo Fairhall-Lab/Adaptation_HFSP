@@ -13,7 +13,11 @@
 function [y] = generateTrial(trialLen,frameLen,rate,seed)
 
 %sets the random seed if given
-if(nargin >= 4 && ~isempty(seed))
+
+useSeed = (nargin >= 4 && ~isempty(seed));
+if(useSeed)
+    %if a seed is given, saves current seed, sets seed to input, and resets back to old seed once the function is complete
+    prevSeed = rng(); 
     rng(seed);
 end
 
@@ -31,3 +35,7 @@ p1 = min(1,frameLen*rate);
 
 %samples the trial
 y = double(rand(T,1) < p1);
+
+if(useSeed)
+    rng(prevSeed); %returns back to previous random seed
+end
