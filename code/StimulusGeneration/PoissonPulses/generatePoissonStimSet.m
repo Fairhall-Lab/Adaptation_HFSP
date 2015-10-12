@@ -5,7 +5,8 @@
 %
 %  inputs:
 %      nTrials = total number of trials to generate
-%      frozenNoiseCondition = stimulus condition (row of stimulusConditions, see below) that is used for frozen noise trials
+%      frozenNoiseCondition = stimulus condition (row of stimulusConditions, see below) that is used for frozen noise
+                              trials
 %      blocksBetweenFrozenStim = how many trials of each stimulus condition
 %                                are shown between presentations of the frozen stim (default = 1)
 %      randomSeed = random seed used to generate trial order and pulse
@@ -21,16 +22,18 @@
 %      frameLen = frame length in seconds to use for generating discrete stimulus
 %                 (optional, default = 10ms)
 %  outputs:
-%      Stim = matrix of stimuli for each trial. Each entry is a single frame (num rows=nTrials,num columns=maximum trial length in frames)
+%      Stim = matrix of stimuli for each trial. 
+%             Each entry is a single frame (num rows=nTrials,num columns=maximum trial length in frames)
 %             Trials that are shorter than maximum trial length are padded with nans at
 %             the end of the row. Stimulus entries are only 1s and 0s
 %      TL = length of each trial, in terms of number of frames (vector, length=nTrials)
 %      TF = temporal frequency for each trial (vector, length=nTrials)
-%      SC = integer label of stimulus condition for each trial. With the default set of conditions this is equivalent to TF (vector, length=nTrials)
+%      SC = integer label of stimulus condition for each trial. With the default set of conditions this
+            is equivalent to TF (vector, length=nTrials)
 %      frozenNoiseTrials = whether a trial was a frozen noise trial or not, (vector, length=nTrials)
 %      randomSeed,randomSeed_frozen = the random seeds used to generate the stimuli
 %                                     (specified either by input or the default seeds) 
-%      StimLong          = the entire stimulus unraveled into a vector with padding between trials (specified by pauseLen) 
+%      StimLong = the entire stimulus unraveled into a vector with padding between trials (specified by pauseLen) 
 %                          (and padded at the beginning and end)
 %      TS = start times each trial within StimLong (vector, length=nTrials)
 %
@@ -38,8 +41,9 @@
 %      [Stim,TL,TF,SC,frozenNoiseTrials,randomSeed,randomSeed_frozenStimLong,TS] = generatePoissonStimSet(500,6,1);
 %
 %      This generates 500 trials. Every 9th trial is a fixed trial of 10pulses/second (the 6th stimulus condition).
-%      The 8 trials between each frozen noise presentation consist of 1 trial of each pulse frequency, in some shuffled order.
-%      This offers some randomization of the order of the pulse rates used, but it ensures that the conditions are all presented equally often.
+%      The 8 trials between each frozen noise presentation consist of 1 trial of each pulse frequency, in some shuffled
+%      order. This offers some randomization of the order of the pulse rates used, but it ensures that the frequencies
+%      are presented equally often.
 %
 function [Stim,TL,TF,SC,frozenNoiseTrials,randomSeed,randomSeed_frozen,StimLong,TS] = generatePoissonStimSet(nTrials,frozenNoiseCondition,blocksBetweenFrozenStim,randomSeed,randomSeed_frozen,stimulusConditions,pauseLen,frameLen)
 

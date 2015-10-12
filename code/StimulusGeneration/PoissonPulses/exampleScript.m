@@ -1,6 +1,6 @@
-%This sample script shows how to generate pulse stimuli one at a time during an experiment using the generateTrial.m function.
-%A frozen noise stimulus is shown every frozenInterval trials throughout.
-%this function sets up the random number generator seeds to use. Right now, it will generate the same set of trials every time it is run!
+%This sample script shows how to generate pulse stimuli one at a time during an experiment using the generateTrial.m
+% function. A frozen noise stimulus is shown every frozenInterval trials throughout. This function sets up the random
+% number generator seeds to use. Right now, it will generate the same set of trials every time it is run!
 
 
 %The stimulus conditions to use for the experiment
