@@ -1,5 +1,11 @@
+%This sample script shows how to generate pulse stimuli one at a time during an experiment using the generateTrial.m function.
+%A frozen noise stimulus is shown every frozenInterval trials throughout.
+%this function sets up the random number generator seeds to use. Right now, it will generate the same set of trials every time it is run!
+
+
+%The stimulus conditions to use for the experiment
 %Each row contains a condition
-%  column 1 contains the pulse rate
+%  column 1 contains the pulse rate (pulses/second)
 %  column 2 contains the trial duration (seconds)
 stimulusConditions = [0.5, 20;
         1, 10;
@@ -12,21 +18,23 @@ stimulusConditions = [0.5, 20;
     
 NC = size(stimulusConditions,1); %number of conditions
 
+nTrials = 500;%how many trials to do
+
+%sets up seeds (these are both fixed for now! You can replace the numbers in the seeds with the time to randomize every time the script is run)
 randomSeed_frozen = rng(98112,'twister'); %random seed used only to generate the frozen noise stimulus
 randomSeed_init   = rng(55584,'twister'); %random seed used to generate pulse patterns and select pulse rate on each trial
 randomSeed_curr   = randomSeed_init;
 
+%sets up the frozen stimulus conditions
 frozenInterval = 10; %show fixed stimulus at this interval
 frozenCondition = 6; % stimulus condition number (row of stimulusConditions) to use for the frozen noise trial
 
-nTrials = 500;%how many trials to do
+%generates the frozen noise pulse sequence
+y_frozen = generateTrial(stimulusConditions(frozenCondition,2),frameLen,stimulusConditions(frozenCondition,1),randomSeed_frozen);
 
-
+%trial information
 frozenNoiseTrials = false(nTrials,1); %if a trial used the frozen noise or not
 SC          = nan(nTrials,1);   %stimulus condition for each trial
-
-
-y_frozen = generateTrial(stimulusConditions(frozenCondition,2),frameLen,stimulusConditions(frozenCondition,1),randomSeed_frozen);
 
 %loop over trials
 for ii = 1:nTrials
