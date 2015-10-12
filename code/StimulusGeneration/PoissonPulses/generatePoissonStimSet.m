@@ -62,7 +62,7 @@ if(nargin < 6 || isempty(stimulusConditions))
         14.3, 5;
         20, 5];
 end
- 
+
 maxTrialLength = ceil(max(stimulusConditions(:,2)/frameLen)); %max length of each trial (in frames)
 NC = size(stimulusConditions,1); %number of stim conditions
 
