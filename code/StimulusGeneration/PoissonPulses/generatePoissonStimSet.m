@@ -39,6 +39,7 @@
 %
 %      This generates 500 trials. Every 9th trial is a fixed trial of 10pulses/second (the 6th stimulus condition).
 %      The 8 trials between each frozen noise presentation consist of 1 trial of each pulse frequency, in some shuffled order.
+%      This offers some randomization of the order of the pulse rates used, but it ensures that the conditions are all presented equally often.
 %
 function [Stim,TL,TF,SC,frozenNoiseTrials,randomSeed,randomSeed_frozen,StimLong,TS] = generatePoissonStimSet(nTrials,frozenNoiseCondition,blocksBetweenFrozenStim,randomSeed,randomSeed_frozen,stimulusConditions,pauseLen,frameLen)
 
