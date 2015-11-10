@@ -17,7 +17,7 @@
 %                           column 1 contains the pulse rate
 %                           column 2 contains the trial duration (seconds)
 %                            (optional, default list of conditions used)
-%      pauseLen = length of pauses between trials in seconds (optional, default = 5s)
+%      pauseLen = length of pauses between trials in seconds (optional, default = 2s)
 %                 Used only for outputs StimLong and TS
 %      frameLen = frame length in seconds to use for generating discrete stimulus
 %                 (optional, default = 10ms)
@@ -66,16 +66,31 @@ end
 maxTrialLength = ceil(max(stimulusConditions(:,2)/frameLen)); %max length of each trial (in frames)
 NC = size(stimulusConditions,1); %number of stim conditions
 
+%% random seed setup
 %sets up some random seeds based on time in case no seeds are given
-rng('shuffle');
 seed1 = randi(intmax('int32'));
 seed2 = randi(intmax('int32'));
-
-%% generate frozen noise trial
 if(nargin < 5 || isempty(randomSeed_frozen))
     %setup seed to use for frozen noise trials
-    randomSeed_frozen = RandStream('mt19937ar','seed',seed1);
+    randomSeed_frozen = RandStream.create('mt19937ar','seed',seed1);
+elseif(isnumeric(randomSeed_frozen))
+    randomSeed_frozen = RandStream.create('mt19937ar','seed',randomSeed_frozen);
+elseif(~isa(seed,'RandStream'))
+    error('The frozen seed provided is not a valid RandStream object.');
 end
+
+if(nargin < 4 || isempty(randomSeed))
+    %setup random seed to use
+    randomSeed = RandStream.create('mt19937ar','seed',seed2);
+elseif(isnumeric(randomSeed))
+    randomSeed_frozen = RandStream.create('mt19937ar','seed',randomSeed);
+elseif(~isa(seed,'RandStream'))
+    error('The frozen seed provided is not a valid RandStream object.');
+end
+
+
+%% generate frozen noise trial
+
 
 y_frozen = generateTrial(stimulusConditions(frozenNoiseCondition,2),frameLen,stimulusConditions(frozenNoiseCondition,1),randomSeed_frozen);
 
@@ -84,10 +99,6 @@ y_frozen = generateTrial(stimulusConditions(frozenNoiseCondition,2),frameLen,sti
 %  then shows the frozen noise trial
 if(nargin < 3 || isempty(blocksBetweenFrozenStim))
     blocksBetweenFrozenStim = 1; %there are blocksBetweenFrozenStim number of each stimulus condition between presentations of the frozen stimulus
-end
-if(nargin < 4 || isempty(randomSeed))
-    %setup random seed to use
-    randomSeed = RandStream('mt19937ar','seed',seed2);
 end
 
 
@@ -119,7 +130,7 @@ TF = stimulusConditions(SC,1);
 
 %% Reshapes the stimulus into one long array with padding between trials
 if(nargin < 7 || isempty(pauseLen))
-    pauseLen = 5; %seconds
+    pauseLen = 2; %seconds
 end
 pauseLenFrames = ceil(pauseLen/frameLen);
 
