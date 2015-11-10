@@ -83,7 +83,7 @@ if(nargin < 4 || isempty(randomSeed))
     %setup random seed to use
     randomSeed = RandStream.create('mt19937ar','seed',seed2);
 elseif(isnumeric(randomSeed))
-    randomSeed_frozen = RandStream.create('mt19937ar','seed',randomSeed);
+    randomSeed = RandStream.create('mt19937ar','seed',randomSeed);
 elseif(~isa(seed,'RandStream'))
     error('The frozen seed provided is not a valid RandStream object.');
 end
