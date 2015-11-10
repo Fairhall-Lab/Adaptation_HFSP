@@ -17,15 +17,13 @@ stimulusConditions = [0.5, 20;
         20, 5];
     
 NC = size(stimulusConditions,1); %number of conditions
-frozenNoiseCondition = 6;
-
-frameLen = 10e-3; %frame length in seconds
 
 nTrials = 500;%how many trials to do
 
 %sets up seeds (these are both fixed for now! You can replace the numbers in the seeds with the time to randomize every time the script is run)
-randomSeed_frozen = RandStream.create('mt19937ar','Seed',98112); %random seed used only to generate the frozen noise stimulus
-randomSeed        = RandStream.create('mt19937ar','Seed',55584); %random seed used to generate pulse patterns and select pulse rate on each trial
+randomSeed_frozen = rng(98112,'twister'); %random seed used only to generate the frozen noise stimulus
+randomSeed_init   = rng(55584,'twister'); %random seed used to generate pulse patterns and select pulse rate on each trial
+randomSeed_curr   = randomSeed_init;
 
 %sets up the frozen stimulus conditions
 frozenInterval = 10; %show fixed stimulus at this interval
@@ -45,13 +43,15 @@ for ii = 1:nTrials
         frozenNoiseTrials(ii) = true;
         y_curr = y_frozen;
     else
+        rng(randomSeed_curr);
         
         %randomly select condition (Poisson rate) for this trial
-        SC(ii) = randi(randomSeed,NC);
+        SC(ii) = randi(NC);
         
         %generate stimulus
-        y_curr = generateTrial(stimulusConditions(SC(ii),2),frameLen,stimulusConditions(SC(ii),1),randomSeed);
+        y_curr = generateTrial(stimulusConditions(SC(ii),2),frameLen,stimulusConditions(SC(ii),1));
         
+        randomSeed_curr = rng();
     end
     
     %% y_curr now contains a Poisson stimulus to present to animal...

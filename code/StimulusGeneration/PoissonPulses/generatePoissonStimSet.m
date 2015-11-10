@@ -9,9 +9,9 @@
 %                             trials
 %      blocksBetweenFrozenStim = how many trials of each stimulus condition
 %                                are shown between presentations of the frozen stim (default = 1)
-%      randomSeed = random seed used to generate trial order and pulse
+%      randomSeed = RandStream object used to generate trial order and pulse
 %                   times for each stimulus (fixed default seed used if not specified) 
-%      randomSeed_frozen = random seed used to generate the frozen noise stimulus 
+%      randomSeed_frozen = RandStream object used to generate the frozen noise stimulus 
 %                   (fixed default seed used if not specified) 
 %      stimulusConditions = matrix of different stimulus conditions. Each row contains a condition
 %                           column 1 contains the pulse rate
@@ -74,7 +74,7 @@ seed2 = randi(intmax('int32'));
 %% generate frozen noise trial
 if(nargin < 5 || isempty(randomSeed_frozen))
     %setup seed to use for frozen noise trials
-    randomSeed_frozen = rng(seed1,'twister');
+    randomSeed_frozen = RandStream('mt19937ar','seed',seed1);
 end
 
 y_frozen = generateTrial(stimulusConditions(frozenNoiseCondition,2),frameLen,stimulusConditions(frozenNoiseCondition,1),randomSeed_frozen);
@@ -87,12 +87,12 @@ if(nargin < 3 || isempty(blocksBetweenFrozenStim))
 end
 if(nargin < 4 || isempty(randomSeed))
     %setup random seed to use
-    randomSeed = rng(seed2,'twister');
+    randomSeed = RandStream('mt19937ar','seed',seed2);
 end
-rng(randomSeed);
+
 
 frozenNoiseTrials = false(nTrials,1); 
-SC          = randi(NC,[nTrials,1]);   
+SC          = randi(randomSeed,NC,[nTrials,1]);   
 TL          = nan(nTrials,1);
 Stim        = nan(nTrials,maxTrialLength);
 
@@ -108,7 +108,7 @@ for ii = 1:nTrials
         frozenNoiseTrials(ii) = true;
         y_curr = y_frozen;
     else
-        y_curr = generateTrial(stimulusConditions(SC(ii),2),frameLen,stimulusConditions(SC(ii),1));
+        y_curr = generateTrial(stimulusConditions(SC(ii),2),frameLen,stimulusConditions(SC(ii),1),randomSeed);
     end
     TL(ii) = length(y_curr);
     Stim(ii,1:TL(ii)) = y_curr;
