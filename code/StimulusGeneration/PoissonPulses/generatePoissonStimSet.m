@@ -5,8 +5,12 @@
 %
 %  inputs:
 %      nTrials = total number of trials to generate
-%      frozenNoiseCondition = stimulus condition (row of stimulusConditions, see below) that is used for frozen noise
-%                             trials
+%      frozenNoiseInfo = struct with values:
+%          length = stimulus length for frozen noise trials (in seconds)
+%          timeConstant =  rate for frozen noise is drawn from an AR1 process with time
+%                          constant 1
+%          minRate      = minimum rate to use
+%          maxRate      = maximum rate (AR1 scaled to span this range)
 %      blocksBetweenFrozenStim = how many trials of each stimulus condition
 %                                are shown between presentations of the frozen stim (default = 1)
 %      randomSeed = RandStream object used to generate trial order and pulse
@@ -45,7 +49,7 @@
 %      order. This offers some randomization of the order of the pulse rates used, but it ensures that the frequencies
 %      are presented equally often.
 %
-function [Stim,TL,TF,SC,frozenNoiseTrials,randomSeed,randomSeed_frozen,StimLong,TS] = generatePoissonStimSet(nTrials,frozenNoiseCondition,blocksBetweenFrozenStim,randomSeed,randomSeed_frozen,stimulusConditions,pauseLen,frameLen)
+function [Stim,TL,TF,SC,frozenNoiseTrials,frozenNoiseRate,randomSeed,randomSeed_frozen,StimLong,TS] = generatePoissonStimSet(nTrials,frozenNoiseInfo,blocksBetweenFrozenStim,randomSeed,randomSeed_frozen,stimulusConditions,pauseLen,frameLen)
 
 if(nargin < 8)
     frameLen = 10e-3; %frame length in seconds
@@ -63,7 +67,7 @@ if(nargin < 6 || isempty(stimulusConditions))
         20, 5];
 end
 
-maxTrialLength = ceil(max(stimulusConditions(:,2)/frameLen)); %max length of each trial (in frames)
+maxTrialLength = ceil(max([stimulusConditions(:,2);frozenNoiseInfo.length]./frameLen)); %max length of each trial (in frames)
 NC = size(stimulusConditions,1); %number of stim conditions
 
 %% random seed setup
@@ -91,8 +95,9 @@ end
 
 %% generate frozen noise trial
 
-
-y_frozen = generateTrial(stimulusConditions(frozenNoiseCondition,2),frameLen,stimulusConditions(frozenNoiseCondition,1),randomSeed_frozen);
+frozenNoiseRate = generateAR1(frozenNoiseInfo.timeConstant,frameLen,frozenNoiseInfo.length,0.01,randomSeed_frozen);
+frozenNoiseRate = frozenNoiseRate*(frozenNoiseInfo.maxRate-frozenNoiseInfo.minRate)+frozenNoiseInfo.minRate;
+y_frozen = generateTrial([],frameLen,frozenNoiseRate,randomSeed_frozen);
 
 %% generate stimulus block
 %  draws a trial from each of the conditions frozenInterval times in randomly permuted order
@@ -107,9 +112,8 @@ SC          = randi(randomSeed,NC,[nTrials,1]);
 TL          = nan(nTrials,1);
 Stim        = nan(nTrials,maxTrialLength);
 
-
 for ii = 1:(NC*blocksBetweenFrozenStim+1):nTrials
-    order = [(mod(randperm(NC*blocksBetweenFrozenStim),NC)+1)';frozenNoiseCondition];
+    order = [(mod(randperm(NC*blocksBetweenFrozenStim),NC)+1)';-1];
     SC(ii:min(ii+NC*blocksBetweenFrozenStim,nTrials)) = order(1:length(SC(ii:min(ii+NC*blocksBetweenFrozenStim,nTrials))));
 end
 
@@ -125,7 +129,8 @@ for ii = 1:nTrials
     Stim(ii,1:TL(ii)) = y_curr;
 end
 
-TF = stimulusConditions(SC,1); 
+TF = SC;
+TF(SC > 0) = stimulusConditions(SC(SC>0),1);
 
 
 %% Reshapes the stimulus into one long array with padding between trials
