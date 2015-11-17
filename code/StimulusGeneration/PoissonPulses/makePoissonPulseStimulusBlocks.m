@@ -17,3 +17,6 @@ generationInfo.gitRevision = getGitCommit();
 generationInfo.createdOn   = datestr(now);
 save(sprintf('Stimuli/PoissonPulse/StimBlock%d.mat',stimBlock),'Stim','trialLength','trialFrequency','frozenNoiseTrials','frozenNoiseRate','frozenNoiseInfo','frameLen','generationInfo');
 
+[Stim,trialLength,frameLen] = upsampleTrialBlock(Stim,trialLength,frameLen,upsampleRate);
+generationInfo.stimGenerateCommand = sprintf('%s\n[Stim,trialLength,frameLen] = upsampleTrialBlock(Stim,trialLength,frameLen,upsampleRate);',generationInfo.stimGenerateCommand);
+save(sprintf('Stimuli/PoissonPulse/StimBlock%d_upsampled.mat',stimBlock),'Stim','trialLength','trialFrequency','frozenNoiseTrials','frozenNoiseRate','frozenNoiseInfo','frameLen','generationInfo');
