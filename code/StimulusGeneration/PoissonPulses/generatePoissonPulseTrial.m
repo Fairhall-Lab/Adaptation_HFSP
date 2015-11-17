@@ -1,4 +1,4 @@
-%% generateTrial
+%% generatePoissonPulseTrial
 %  makes a Poisson pulse stimulus for a single trial with a constant rate
 %      trialLen    = length of the trial to simulate (in seconds)
 %                    if rate is a vector (rate on each frame), then this
@@ -19,10 +19,10 @@
 %      y           = the stimulus in descrete bins of width frameLen
 %
 %  example function call
-%    y = generarteTrial(5,10e-3,10);
+%    y = generatePoissonPulseTrial(5,10e-3,10);
 %      returns a 5 second long trial, with frame lengths of 10ms, and a pulse rate of 10pulses/second.
 %    seed = the RandStream object
-function [y,seed] = generateTrial(trialLen,frameLen,rate,seed)
+function [y,seed] = generatePoissonPulseTrial(trialLen,frameLen,rate,seed)
 
 %sets the random seed if given
 

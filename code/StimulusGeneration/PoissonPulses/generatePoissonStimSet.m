@@ -97,7 +97,7 @@ end
 
 frozenNoiseRate = generateAR1(frozenNoiseInfo.timeConstant,frameLen,frozenNoiseInfo.length,0.01,randomSeed_frozen);
 frozenNoiseRate = frozenNoiseRate*(frozenNoiseInfo.maxRate-frozenNoiseInfo.minRate)+frozenNoiseInfo.minRate;
-y_frozen = generateTrial([],frameLen,frozenNoiseRate,randomSeed_frozen);
+y_frozen = generatePoissonPulseTrial([],frameLen,frozenNoiseRate,randomSeed_frozen);
 
 %% generate stimulus block
 %  draws a trial from each of the conditions frozenInterval times in randomly permuted order
@@ -123,7 +123,7 @@ for ii = 1:nTrials
         frozenNoiseTrials(ii) = true;
         y_curr = y_frozen;
     else
-        y_curr = generateTrial(stimulusConditions(SC(ii),2),frameLen,stimulusConditions(SC(ii),1),randomSeed);
+        y_curr = generatePoissonPulseTrial(stimulusConditions(SC(ii),2),frameLen,stimulusConditions(SC(ii),1),randomSeed);
     end
     TL(ii) = length(y_curr);
     Stim(ii,1:TL(ii)) = y_curr;

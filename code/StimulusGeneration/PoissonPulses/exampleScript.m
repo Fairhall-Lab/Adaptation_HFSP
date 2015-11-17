@@ -50,7 +50,7 @@ for ii = 1:nTrials
         SC(ii) = randi(randomSeed,NC);
         
         %generate stimulus
-        y_curr = generateTrial(stimulusConditions(SC(ii),2),frameLen,stimulusConditions(SC(ii),1),randomSeed);
+        y_curr = generatePoissonPulseTrial(stimulusConditions(SC(ii),2),frameLen,stimulusConditions(SC(ii),1),randomSeed);
         
     end
     

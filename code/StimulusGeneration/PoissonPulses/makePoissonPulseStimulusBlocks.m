@@ -1,7 +1,7 @@
 
 %%
 stimBlock = 1;
-frameLen = 20e-3;
+frameLen  = 20e-3;
 
 nTrials         = (8+1)*50;
 frozenNoiseInfo.length = 20;
