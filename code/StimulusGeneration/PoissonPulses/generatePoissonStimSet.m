@@ -71,26 +71,15 @@ maxTrialLength = ceil(max([stimulusConditions(:,2);frozenNoiseInfo.length]./fram
 NC = size(stimulusConditions,1); %number of stim conditions
 
 %% random seed setup
-%sets up some random seeds based on time in case no seeds are given
-seed1 = randi(intmax('int32'));
-seed2 = randi(intmax('int32'));
 if(nargin < 5 || isempty(randomSeed_frozen))
-    %setup seed to use for frozen noise trials
-    randomSeed_frozen = RandStream.create('mt19937ar','seed',seed1);
-elseif(isnumeric(randomSeed_frozen))
-    randomSeed_frozen = RandStream.create('mt19937ar','seed',randomSeed_frozen);
-elseif(~isa(seed,'RandStream'))
-    error('The frozen seed provided is not a valid RandStream object.');
+    randomSeed_frozen = [];
 end
+randomSeed_frozen = checkSeed(randomSeed_frozen);
 
 if(nargin < 4 || isempty(randomSeed))
-    %setup random seed to use
-    randomSeed = RandStream.create('mt19937ar','seed',seed2);
-elseif(isnumeric(randomSeed))
-    randomSeed = RandStream.create('mt19937ar','seed',randomSeed);
-elseif(~isa(seed,'RandStream'))
-    error('The frozen seed provided is not a valid RandStream object.');
+    randomSeed = [];
 end
+randomSeed = checkSeed(randomSeed);
 
 
 %% generate frozen noise trial
@@ -108,12 +97,12 @@ end
 
 
 frozenNoiseTrials = false(nTrials,1); 
-SC          = randi(randomSeed,NC,[nTrials,1]);   
+SC          = nan(nTrials,1);   
 TL          = nan(nTrials,1);
 Stim        = nan(nTrials,maxTrialLength);
 
 for ii = 1:(NC*blocksBetweenFrozenStim+1):nTrials
-    order = [(mod(randperm(NC*blocksBetweenFrozenStim),NC)+1)';-1];
+    order = [(mod(randperm(randomSeed,NC*blocksBetweenFrozenStim),NC)+1)';-1];
     SC(ii:min(ii+NC*blocksBetweenFrozenStim,nTrials)) = order(1:length(SC(ii:min(ii+NC*blocksBetweenFrozenStim,nTrials))));
 end
 

@@ -13,8 +13,9 @@ if(~useSeed)
 end
 %makes sure the seed is a RandStream object
 if(isnumeric(seed))
+    warningMessage = sprintf('The random seed given is a number (%d) instead of a RandStream object - if this function is called again with the same number as seed, it will produce the same stimulus.',seed);
+    warning(warningMessage); %#ok<SPWRN>
     seed = RandStream.create('mt19937ar','seed',seed);
-    warning('The random seed given is a number instead of a RandStream object - if this function is called again with the same number as seed, it will produce the same stimulus.');
 elseif(~isa(seed,'RandStream'))
     error('seed is not a valid RandStream object.');
 end

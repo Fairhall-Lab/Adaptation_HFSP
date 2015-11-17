@@ -16,10 +16,10 @@ generationInfo.upsampleRate      = 1;
 generationInfo.stimGenerateCommand = sprintf('[Stim,trialLength,TF,~,frozenNoiseTrials] = generatePoissonStimSet(%d,frozenNoiseInfo,1,%d,%d,[],[],frameLen)',nTrials,generationInfo.randomSeed,generationInfo.randomSeed_frozen);
 generationInfo.gitRevision = getGitCommit();
 generationInfo.createdOn   = datestr(now);
-%save(sprintf('Stimuli/PoissonPulse/StimBlock%d.mat',stimBlock),'Stim','trialLength','trialFrequency','frozenNoiseTrials','frozenNoiseRate','frozenNoiseInfo','frameLen','generationInfo');
+save(sprintf('Stimuli/PoissonPulse/StimBlock%d.mat',stimBlock),'Stim','trialLength','trialFrequency','frozenNoiseTrials','frozenNoiseRate','frozenNoiseInfo','frameLen','generationInfo');
 
 generationInfo.upsampleRate = 2;
 [Stim,trialLength,frameLen] = upsampleTrialBlock(Stim,trialLength,frameLen,generationInfo.upsampleRate);
 frozenNoiseRate             = upsampleTrialBlock(frozenNoiseRate',[],[],generationInfo.upsampleRate)';
 generationInfo.stimGenerateCommand = sprintf('%s\n[Stim,trialLength,frameLen] = upsampleTrialBlock(Stim,trialLength,frameLen,generationInfo.upsampleRate);\nfrozenNoiseRate             = upsampleTrialBlock(frozenNoiseRate'',[],[],generationInfo.upsampleRate)'';',generationInfo.stimGenerateCommand);
-%save(sprintf('Stimuli/PoissonPulse/StimBlock%d_upsampled.mat',stimBlock),'Stim','trialLength','trialFrequency','frozenNoiseTrials','frozenNoiseRate','frozenNoiseInfo','frameLen','generationInfo');
+save(sprintf('Stimuli/PoissonPulse/StimBlock%d_upsampled.mat',stimBlock),'Stim','trialLength','trialFrequency','frozenNoiseTrials','frozenNoiseRate','frozenNoiseInfo','frameLen','generationInfo');
